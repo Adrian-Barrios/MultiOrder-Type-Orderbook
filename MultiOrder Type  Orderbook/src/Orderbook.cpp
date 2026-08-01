@@ -41,7 +41,19 @@ struct LevelInfo
 	Quantity quantity_;
 };
 
-using levelInfos = std::vector<LevelInfo>;
+using LevelInfos = std::vector<LevelInfo>;
+
+class OrderbookLevelInfos
+{
+public:
+	OrderbookLevelInfos(const LevelInfos& bids, const LevelInfos& asks)
+		: bids_{ bids }
+		, asks_{ asks }
+	{}
+	const LevelInfos& GetBids() const { return bids_; }
+	const LevelInfos& GetAsks() const { return asks_; }
+
+};
 
 int main()
 {
