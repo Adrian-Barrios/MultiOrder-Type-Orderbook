@@ -91,6 +91,11 @@ private:
 	Quantity remainingQuantity_;
 };
 
+using OrderPointer = std::shared_ptr<Order>; // Because an order can be stored in an Orders dictionary and bid or ask dictionary as well.
+using OrderPointers = std::list<OrderPointer>; // List instead of vector so pointers are not invalidated.
+
+
+
 int main()
 {
 	return 0;
