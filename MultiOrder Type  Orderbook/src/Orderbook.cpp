@@ -113,7 +113,13 @@ public:
 	{
 		return std::make_shared<Order>(type, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
 	}
+private:
+	OrderId orderId_;
+	Price price_;
+	Side side_;
+	Quantity quantity_;
 };
+
 
 int main()
 {
