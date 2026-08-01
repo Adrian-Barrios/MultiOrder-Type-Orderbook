@@ -57,6 +57,20 @@ private:
 	LevelInfos asks_;
 };
 
+class Order
+{
+public:
+	Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
+		: orderType_{ orderType }
+		, orderId_{ orderId }
+		, side_{ side }
+		, price_{ price }
+		, initialQuanity_{ quantity }
+		, remainingQuantity { quantity }
+	{ }
+	private
+};
+
 int main()
 {
 	return 0;
