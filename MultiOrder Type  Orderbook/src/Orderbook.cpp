@@ -52,7 +52,9 @@ public:
 	{}
 	const LevelInfos& GetBids() const { return bids_; }
 	const LevelInfos& GetAsks() const { return asks_; }
-
+private:
+	LevelInfos bids_;
+	LevelInfos asks_;
 };
 
 int main()
