@@ -72,8 +72,8 @@ public:
 	Side GetSide() const { return side_; }
 	Price GetPrice() const { return price_; }
 	OrderType GetOrderType() const { return orderType_; }
-	Quantity GetIntitialQuantity() const { return initialQuantity; }
-	Quantity GetRemainingQuantity() const { return remainingQuanity; }
+	Quantity GetIntitialQuantity() const { return initialQuantity_; }
+	Quantity GetRemainingQuantity() const { return remainingQuantity_; }
 	Quantity GetFilledQuantity() const { return GetIntitialQuantity() - GetRemainingQuantity(); }
 	void Fill(Quantity quantity)
 	{
@@ -94,14 +94,14 @@ private:
 using OrderPointer = std::shared_ptr<Order>; // Because an order can be stored in an Orders dictionary and bid or ask dictionary as well.
 using OrderPointers = std::list<OrderPointer>; // List instead of vector so pointers are not invalidated.
 
-class OrderModify
+class OrderModify // Represents a request to modify an existing order (change price and/or quantity)
 {
 public:
 	OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
 		: orderId_{ orderId }
 		, price_{ price }
 		, side_{ side }
-		, quantity{ quantity }
+		, quantity_{ quantity }
 	{}
 
 	OrderId GetOrderId() const { return orderId_; }
@@ -127,7 +127,7 @@ struct TradeInfo
 	Quantity quantity_;
 };
 
-class Trade
+class Trade // Caputres both a sell and buy order.
 {
 public:
 	Trade(const TradeInfo& bidTrade, const TradeInfo& askTrade)
@@ -142,6 +142,23 @@ private:
 };
 
 using Trades = std::vector<Trade>;
+
+// Orderbook
+
+class OrderBook
+{
+private:
+	struct OrderEntry
+	{
+		OrderPointer order_{ nullptr };
+		OrderPointers::iterator location_;
+	};
+
+	std::map<Price, OrderPointers, std::greater<Price>> bids_; // The best bid is the one willing to pay th most.
+	std::map<Price, OrderPointers, std::less<Price>> asks_; // The best ask is th cheapest sell offer.
+	std::unordered_map<OrderId, OrderEntry> orders_;
+
+};
 
 int main()
 {
