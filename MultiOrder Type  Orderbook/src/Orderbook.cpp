@@ -94,7 +94,26 @@ private:
 using OrderPointer = std::shared_ptr<Order>; // Because an order can be stored in an Orders dictionary and bid or ask dictionary as well.
 using OrderPointers = std::list<OrderPointer>; // List instead of vector so pointers are not invalidated.
 
+class OrderModify
+{
+public:
+	OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
+		: orderId_{ orderId }
+		, price_{ price }
+		, side_{ side }
+		, quantity{ quantity }
+	{}
 
+	OrderId GetOrderId() const { return orderId_; }
+	Price GetPrice() const { return price_; }
+	Side GetSide() const { return side_;  }
+	Quantity GetQuantity() const { return quantity_; }
+
+	OrderPointer ToOrderPointer(OrderType type) const
+	{
+		return std::make_shared<Order>(type, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
+	}
+};
 
 int main()
 {
