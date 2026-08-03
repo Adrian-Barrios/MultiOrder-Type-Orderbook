@@ -278,17 +278,21 @@ public:
 
 	void CancelOrder(OrderId orderId)
 	{
-		if (!orders_.contains(orderId))
+		auto it = orders_.find(orderId);
+		if (it == orders_.end())
 			return;
 
-		const auto& [order, iterator] = orders_.at(orderId);
-		orders_.erase(orderId);
+		// Copy by value — shared_ptr bumps refcount, iterator is just a pointer.
+		OrderPointer order = it->second.order_;
+		OrderPointers::iterator location = it->second.location_;
+
+		orders_.erase(it);   // now safe
 
 		if (order->GetSide() == Side::Sell)
 		{
 			auto price = order->GetPrice();
 			auto& orders = asks_.at(price);
-			orders.erase(iterator);
+			orders.erase(location);
 			if (orders.empty())
 				asks_.erase(price);
 		}
@@ -296,7 +300,7 @@ public:
 		{
 			auto price = order->GetPrice();
 			auto& orders = bids_.at(price);
-			orders.erase(iterator);
+			orders.erase(location);
 			if (orders.empty())
 				bids_.erase(price);
 		}
@@ -304,12 +308,13 @@ public:
 
 	Trades MatchOrder(OrderModify order)
 	{
-		if (!orders_.contains(order.GetOrderId()))
+		auto it = orders_.find(order.GetOrderId());
+		if (it == orders_.end())
 			return {};
 
-		const auto& [existingOrder, _] = orders_.at(order.GetOrderId());
+		OrderType existingType = it->second.order_->GetOrderType();  // copy the value out
 		CancelOrder(order.GetOrderId());
-		return AddOrder(order.ToOrderPointer(existingOrder->GetOrderType()));
+		return AddOrder(order.ToOrderPointer(existingType));
 	}
 	std::size_t Size() const { return orders_.size(); }
 
@@ -338,5 +343,9 @@ public:
 
 int main()
 {
+	OrderBook orderbook;
+	const OrderId orderId = 1;
+	orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel, orderId, Side::Buy, 100, 10));
+	std::cout << orderbook.Size() << std::endl;
 	return 0;
 }
