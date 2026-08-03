@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="MultiOrder Type  Orderbook/MultiOrder Type  Orderbook.vcxproj" />
+  <Project Path="MultiOrder Type  Orderbook/MultiOrder Type  Orderbook.vcxproj" Id="0bd2a719-ea07-4678-8cbd-18dfcb0c89a9" />
 </Solution>
